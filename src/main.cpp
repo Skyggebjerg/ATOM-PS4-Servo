@@ -1,27 +1,29 @@
-#include <Arduino.h>
-
-#include <PS4Controller.h>
-#include <M5Atom.h>
+#include <M5Atom.h> 
 #include "AtomMotion.h"
-int servoPos;
+//#include <PS4Controller.h>
 
 AtomMotion Atom;
+int servoPos;
+int stigning;
 
-void setup() {
+void setup(){ 
   M5.begin(true, false, true);
-  Atom.Init();  // sda  25     scl  21
-  Atom.SetServoAngle(1,90); // 90 degrees for 360 degree servo
-  Serial.begin(115200);
-  PS4.begin("b0:52:16:e3:5b:02");
+  Atom.Init();
+
+  //PS4.begin("4C:75:25:AD:78:7A");
   Serial.println("Ready.");
+  servoPos =  0;
+  stigning = 1;
 }
 
 void loop() {
-     if (PS4.isConnected()) {
-        servoPos =  (127+(PS4.R2Value()/2)) / 1.4; // add 127 for 360 degree servo
-        //Serial.println(PS4.R2Value());
-     }
+
+       
+        servoPos =  servoPos+stigning;
+        if(servoPos==180) stigning = -1;
+        if(servoPos==0) stigning = 1;
+
  
      Atom.SetServoAngle(1,servoPos);
-     delay(10);
+     delay(2000);
 }
